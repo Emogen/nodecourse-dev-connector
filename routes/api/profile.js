@@ -202,4 +202,65 @@ router.post('/education',passport.authenticate('jwt',{session:false}),(req,res)=
     }).catch((e)=>res.status(400).json({sys:'Unknown Error'}));
 });
 
+//@route DELETE api/profile/experience/:experience_id
+//@desc Delete experience from profile
+//@access Logged User
+
+router.delete('/experience/:experience_id',passport.authenticate('jwt',{session:false}),(req,res)=>{
+  const errors = {};
+  Profile.findOne({user: req.user.id})
+    .then(profile=>{
+
+      //Get remove index
+      const removeIndex = profile.experience
+        .map((experience)=>experience.id)
+        .indexOf(req.params.experience_id);
+      //Splice out of array
+      if(removeIndex<0){
+        errors.experience = 'Experience not found'
+        return res.status(404).json(errors);
+      }
+      profile.experience.splice(removeIndex,1);
+
+      return profile.save().then(profile=>res.json(profile));
+    }).catch((e)=>res.status(400).json({sys:'Unknown Error'}));
+});
+
+//@route DELETE api/profile/education/:education_id
+//@desc Delete education from profile
+//@access Logged User
+
+router.delete('/education/:education_id',passport.authenticate('jwt',{session:false}),(req,res)=>{
+  const errors = {};
+  Profile.findOne({user: req.user.id})
+    .then(profile=>{
+
+      //Get remove index
+      const removeIndex = profile.education
+        .map((education)=>education.id)
+        .indexOf(req.params.education_id);
+      //Splice out of array
+      if(removeIndex<0){
+        errors.education = 'Education not found'
+        return res.status(404).json(errors);
+      }
+      profile.education.splice(removeIndex,1);
+
+      return profile.save().then(profile=>res.json(profile));
+    }).catch((e)=>res.status(400).json({sys:'Unknown Error'}));
+});
+
+//@route DELETE api/profile/
+//@desc Delete user and profiles
+//@access Logged User
+
+router.delete('/',passport.authenticate('jwt',{session:false}),(req,res)=>{
+  const errors = {};
+  Profile.findOneAndRemove({user: req.user.id})
+        .then(()=>{
+          User.findOneAndRemove({_id:req.user.id})
+              .then(()=>res.json({success:true}));
+        });
+});
+
 module.exports = router;

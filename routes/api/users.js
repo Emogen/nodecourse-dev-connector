@@ -4,6 +4,11 @@ const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
+
+//Load input validation
+const {validateRegisterInput} = require('./../../validation/register');
+const {validateLoginInput} = require('./../../validation/login');
+
 //Load user model
 const {User} = require('./../../models/User');
 const keys = require('./../../config/keys');
@@ -19,10 +24,18 @@ router.get('/test',(req,res)=>{
 //@access Public
 
 router.post('/register',(req,res)=>{
+  const {errors, isValid} = validateRegisterInput(req.body);
+
+  //check validation
+  if(!isValid){
+    return res.status(400).json(errors);
+  }
+
   User.findOne({email: req.body.email})
       .then((user)=>{
         if(user){
-          return res.status(400).json({email:"Email already exist"});
+          errors.email = 'Email Already Exist';
+          return res.status(400).json(errors);
         }
         const avatar = gravatar.url(req.body.email,{
           s: '200', //Size
@@ -54,21 +67,28 @@ router.post('/register',(req,res)=>{
 //@access Public
 
 router.post('/login',(req,res)=>{
+  const {errors, isValid} = validateLoginInput(req.body);
+  //check validation
+  if(!isValid){
+    return res.status(400).json(errors);
+  }
+
   const email = req.body.email;
   const password = req.body.password;
-
   //Find the user by Email
   User.findOne({email})
       .then(user =>{
         //check for users
         if(!user){
-          return res.status(404).send({email: 'user email not found'});
+          errors.email = 'user email not found';
+          return res.status(404).send({errors});
         }
         //Check password
         bcrypt.compare(password,user.password)
           .then(isMatch =>{
             if(!isMatch){
-              return res.status(400).json({password: 'Password Incorrect'})
+              errors.password = 'Password Incorrect';
+              return res.status(400).json({errors})
             }
             //user matched
             const payload = {

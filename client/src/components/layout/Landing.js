@@ -1,9 +1,18 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router-dom'
+import propTypes from 'prop-types';
+import { withRouter } from 'react-router-dom';
+import {connect} from 'react-redux';
+
 /**
  * Landing
  */
 class Landing extends Component { // eslint-disable-line react/prefer-stateless-function
+  componentDidMount(){
+    if(this.props.auth.isAuthenticated){
+      this.props.history.push('/dashboard');
+    }
+  }
   render() {
     return (
       <div className="landing">
@@ -25,5 +34,10 @@ class Landing extends Component { // eslint-disable-line react/prefer-stateless-
     );
   }
 }
-
-export default Landing;
+Landing.propTypes = {
+  auth: propTypes.object.isRequired
+}
+const mapStateToProps = (state) => ({
+  auth: state.auth
+});
+export default connect(mapStateToProps)(Landing);

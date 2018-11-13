@@ -81,14 +81,14 @@ router.post('/login',(req,res)=>{
         //check for users
         if(!user){
           errors.email = 'user email not found';
-          return res.status(404).send({errors});
+          return res.status(404).send(errors);
         }
         //Check password
         bcrypt.compare(password,user.password)
           .then(isMatch =>{
             if(!isMatch){
               errors.password = 'Password Incorrect';
-              return res.status(400).json({errors})
+              return res.status(400).json(errors)
             }
             //user matched
             const payload = {

@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import {connect} from 'react-redux';
 import {logoutUser} from '../../actions/authAction';
+import {clearProfile} from '../../actions/profileActions';
 /**
  * Navbar
  */
@@ -12,8 +13,10 @@ class Navbar extends Component { // eslint-disable-line react/prefer-stateless-f
 
   onLogoutClick(e){
     e.preventDefault();
+    this.props.clearProfile();
     this.props.logoutUser();
     this.props.history.push('/');
+
   }
 
   render() {
@@ -63,6 +66,7 @@ class Navbar extends Component { // eslint-disable-line react/prefer-stateless-f
 }
 Navbar.propTypes = {
   logoutUser: PropTypes.func.isRequired,
+  clearProfile: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired
 }
 
@@ -70,4 +74,4 @@ const mapStateToProps = (state)=>({
   auth: state.auth
 });
 
-export default connect(mapStateToProps,{logoutUser})(withRouter(Navbar));
+export default connect(mapStateToProps,{logoutUser,clearProfile})(withRouter(Navbar));

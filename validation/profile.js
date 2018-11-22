@@ -26,7 +26,6 @@ var validateProfileInput = (data) =>{
     }
   }
   if(!isEmpty(data.twitter)){
-    console.log('Masuk : ',data.twitter+'a');
     if(!Validator.isURL(data.twitter)){
       errors.twitter = 'Not a Valid URL';
     }

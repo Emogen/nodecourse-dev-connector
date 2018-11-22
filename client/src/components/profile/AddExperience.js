@@ -78,7 +78,7 @@ class AddExperience extends Component { // eslint-disable-line react/prefer-stat
                 <TextFieldGroup type="date" name="to" value={this.state.to} onChange={this.onChange} error={errors.to} disabled={this.state.disabled ? 'disabled' : ''} />
                 <div className="form-check mb-4">
                   <input type="checkbox" className="form-check-input" name="current" value={this.state.current} checked={this.state.current} onChange={this.onCheck} id="current"/>
-                  <label HtmlFor="current" className="form-check-label">Current Job</label>
+                  <label htmlFor="current" className="form-check-label">Current Job</label>
                 </div>
                 <TextAreaFieldGroup placeholder="Job Description" name="description" value={this.state.description} onChange={this.onChange} error={errors.description} info="Tell us about your position"/>
                 <input type="submit" value="Submit" className="btn btn-info btn-block mt-4" />
